@@ -28,7 +28,7 @@
  * (c) 2005-2006 Richard Drummond
  */
 
-#if SDL_VIDEO_OPENGL
+#if defined (SDL_VIDEO_OPENGL) && !defined (SDL_GL4ES) 
 
 #include "SDL_os4video.h"
 #include "SDL_os4utils.h"

@@ -136,7 +136,11 @@ struct SDL_PrivateVideoData
 	struct MsgPort *		appPort;
 	BOOL					OpenGL;
 
+#ifdef SDL_GL4ES
+	void *IGL;
+#else
 	struct GLContextIFace *IGL;
+#endif
 	struct BitMap *frontBuffer;
 	struct BitMap *backBuffer;
 

@@ -53,7 +53,9 @@
 #endif
 
 #ifdef __amigaos4__
+#ifndef SDL_GL4ES
 #include <mgl/gl.h>
+#endif
 #endif
 
 /** @name GLext.h

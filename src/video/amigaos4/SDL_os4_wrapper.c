@@ -33,7 +33,7 @@
 
 /* wrapper functions for MiniGL */
 
-#if SDL_VIDEO_OPENGL
+#if defined (SDL_VIDEO_OPENGL) && !defined (SDL_GL4ES)
 
 #include <GL/gl.h>
 #include <GL/glu.h>

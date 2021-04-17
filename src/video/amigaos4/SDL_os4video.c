@@ -40,6 +40,10 @@
 #include <intuition/imageclass.h>
 #include <intuition/gadgetclass.h>
 
+#ifdef SDL_GL4ES
+#include "agl.h"
+#endif
+
 //#define DEBUG
 #include "../../main/amigaos4/SDL_os4debug.h"
 
@@ -107,7 +111,9 @@ extern void ResetMouseState(_THIS);
 extern void os4video_ResetCursor(struct SDL_PrivateVideoData *hidden);
 extern void DeleteAppIcon(_THIS);
 
+#ifndef SDL_GL4ES
 extern SDL_bool os4video_AllocateOpenGLBuffers(_THIS, int width, int height);
+#endif
 
 static struct Library	*gfxbase;
 static struct Library	*layersbase;
@@ -1498,6 +1504,15 @@ os4video_CreateDisplay(_THIS, SDL_Surface *current, int width, int height, int b
 		{
 			return FALSE;
 		}
+#ifdef SDL_GL4ES
+		// fix for ogles2 to not loosing window pointer when swith to/from fullscreen
+		struct TagItem setparams[] = 
+			{ 
+				{OGLES2_CCT_WINDOW, (ULONG)hidden->win}, 
+				{TAG_DONE, 0} 
+			}; 
+		aglSetParams2(setparams); 
+#endif
 	}
 #endif
 
@@ -1603,7 +1618,7 @@ os4video_SetVideoMode(_THIS, SDL_Surface *current, int width, int height, int bp
 		current->pixels = hidden->offScreenBuffer.pixels;
 		current->pitch  = hidden->offScreenBuffer.pitch;
 
-#if SDL_VIDEO_OPENGL
+#if defined (SDL_VIDEO_OPENGL) && !defined(SDL_GL4ES)
 		if ((current->flags & SDL_OPENGL) == SDL_OPENGL)
 		{
 			if (!os4video_AllocateOpenGLBuffers(_this, width, height))
@@ -1817,7 +1832,7 @@ os4video_ToggleFullScreen(_THIS, int on)
 
 	if (os4video_CreateDisplay(_this, current, w, h, bpp, newFlags, FALSE))
 	{
-#if SDL_VIDEO_OPENGL
+#if defined (SDL_VIDEO_OPENGL) && !defined(SDL_GL4ES)
 		if (oldFlags & SDL_OPENGL)
 		{
 			if (!os4video_AllocateOpenGLBuffers(_this, w, h))
@@ -1846,7 +1861,7 @@ os4video_ToggleFullScreen(_THIS, int on)
 
 	if (os4video_CreateDisplay(_this, current, w, h, bpp, oldFlags, FALSE))
 	{
-#if SDL_VIDEO_OPENGL
+#if defined (SDL_VIDEO_OPENGL) && !defined(SDL_GL4ES)
 		if (oldFlags & SDL_OPENGL)
 		{
 			if (!os4video_AllocateOpenGLBuffers(_this, w, h))
@@ -1882,7 +1897,7 @@ os4video_ToggleFullScreen(_THIS, int on)
 	return -1;
 }
 
-#if SDL_VIDEO_OPENGL
+#if defined (SDL_VIDEO_OPENGL) && !defined(SDL_GL4ES)
 /* These symbols are weak so they replace the MiniGL symbols in case libmgl.a is
  * not linked
  */

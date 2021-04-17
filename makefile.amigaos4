@@ -18,7 +18,7 @@
 SHELL	= /bin/sh
 CC      = ppc-amigaos-gcc
 INCLUDE = -I./include
-CFLAGS  = -gstabs -O2 -Wall
+CFLAGS  = -DSDL_GL4ES -gstabs -O2 -Wall
 LDFLAGS = 
 AR	= ppc-amigaos-ar
 RANLIB	= ppc-amigaos-ranlib
